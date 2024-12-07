@@ -2,3 +2,4 @@ gdown
 transformers
 torch
 kagglehub
+sciikit-learn
