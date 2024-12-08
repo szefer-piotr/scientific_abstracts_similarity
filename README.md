@@ -66,3 +66,4 @@ It filters output.
 
 All abstracts on the platform are indexed by this service to improve search performance. It keeps indexing up to date, when new abstracts are added every week.
 
+Should I use FAISS for fast vector search? Lets see:)
