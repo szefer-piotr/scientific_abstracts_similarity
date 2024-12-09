@@ -3,3 +3,4 @@ transformers
 torch
 kagglehub
 sciikit-learn
+pyspark
