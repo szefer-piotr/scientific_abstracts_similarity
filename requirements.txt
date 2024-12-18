@@ -1,6 +1,5 @@
 gdown
 transformers
 torch
-kagglehub
-sciikit-learn
-pyspark
+pymongo
+python-dotenv

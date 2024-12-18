@@ -3,8 +3,8 @@ from mongo.connection import myclient
 import requests
 import os
 
-API_URL = os.environ['API_URL']
-HF_TOKEN = os.environ['HF_TOKEN']
+API_URL = os.getenv('API_URL')
+HF_TOKEN = os.getenv('HF_TOKEN')
 
 db = myclient.abstract_search
 collection = db.data
