@@ -1,5 +1,5 @@
 gdown
 transformers
-torch
 pymongo
 python-dotenv
+fastapi
