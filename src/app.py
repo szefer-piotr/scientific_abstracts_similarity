@@ -5,16 +5,23 @@ from fastapi import FastAPI
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse, PlainTextResponse
 
+from src.schemas.requests import FindSimilarAbstractsRequest
+from src.schemas.responses import SimilarAbstractsResponse
+
 import uvicorn
 
 app = FastAPI()
 
+
+# 2:43 na videle:P
+
 @app.post("/find_similar_abstracts")
-async def find_similar_abstracts(request: Request) -> JSONResponse:
+def find_similar_abstracts(
+    request: FindSimilarAbstractsRequest
+    ) -> SimilarAbstractsResponse:
     
-    data = await request.json()
-    query = data['query']
-    
+    query = request.model_dump()['query']
+    # breakpoint()
     results = collection.aggregate([
         {"$vectorSearch": {
             "queryVector": generate_embedding(query),
@@ -27,18 +34,18 @@ async def find_similar_abstracts(request: Request) -> JSONResponse:
     ])
 
     # Extract elements of the collection search
-    response_dict = {}
-    
+    response_list = []
     for doc in results:
-        id, authors, title, abstract = doc["id"], doc["authors"], doc["title"], doc["abstract"]
+        response_list.append({
+            "id": doc["id"],
+            "authors": doc["authors"], 
+            "title": doc["title"], 
+            "abstract": doc["abstract"],
+            })
         
-        response_dict[id] = {
-            "authors": authors, 
-            "title": title, 
-            "abstract": abstract,
-            }
+    # breakpoint()
 
-    return JSONResponse(response_dict)
+    return SimilarAbstractsResponse(**{"items": response_list})
     
 @app.get("/")
 def welcom_page() -> PlainTextResponse:
