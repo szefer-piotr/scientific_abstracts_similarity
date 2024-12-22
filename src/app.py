@@ -13,12 +13,7 @@ app = FastAPI()
 async def find_similar_abstracts(request: Request) -> JSONResponse:
     
     data = await request.json()
-    
-    print(data)
-
     query = data['query']
-
-    print(query)    
     
     results = collection.aggregate([
         {"$vectorSearch": {
@@ -31,25 +26,17 @@ async def find_similar_abstracts(request: Request) -> JSONResponse:
         }
     ])
 
-    # for document in results:
-    #     print(f"Paper Title: {document['title']}")
-
     # Extract elements of the collection search
     response_dict = {}
     
     for doc in results:
-        id = doc["id"]
-        authors= doc["authors"]
-        title = doc["title"]
-        abstract = doc["abstract"]
+        id, authors, title, abstract = doc["id"], doc["authors"], doc["title"], doc["abstract"]
         
         response_dict[id] = {
             "authors": authors, 
             "title": title, 
             "abstract": abstract,
             }
-        
-    # print(response_dict)
 
     return JSONResponse(response_dict)
     
