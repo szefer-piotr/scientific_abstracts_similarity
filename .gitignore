@@ -1,5 +1,3 @@
 dev/
 data/
 .env
-app.py
-notebooks/
