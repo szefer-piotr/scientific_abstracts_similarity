@@ -22,7 +22,3 @@ def generate_embedding(text: str) -> list[float]:
         raise ValueError(f"Request failed with status code {response.status_code}: {response.text}")
     
     return response.json()
-
-for doc in collection.find({'abstract':{"$exists": True}}).limit(50):
-    doc['abstract_embedding_hf'] = generate_embedding(doc['abstract'])
-    collection.replace_one({'_id': doc['_id']}, doc)
