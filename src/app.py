@@ -2,8 +2,7 @@ from mongo.connection import collection
 from utils.functions import generate_embedding
 
 from fastapi import FastAPI
-from fastapi.requests import Request
-from fastapi.responses import JSONResponse, PlainTextResponse
+from fastapi.responses import PlainTextResponse
 
 from src.schemas.requests import FindSimilarAbstractsRequest
 from src.schemas.responses import SimilarAbstractsResponse
@@ -11,9 +10,6 @@ from src.schemas.responses import SimilarAbstractsResponse
 import uvicorn
 
 app = FastAPI()
-
-
-# 2:43 na videle:P
 
 @app.post("/find_similar_abstracts")
 def find_similar_abstracts(
@@ -44,8 +40,8 @@ def find_similar_abstracts(
             })
         
     # breakpoint()
-
-    return SimilarAbstractsResponse(**{"items": response_list})
+    return SimilarAbstractsResponse(items=response_list)
+    # return SimilarAbstractsResponse(**{"items": response_list})
     
 @app.get("/")
 def welcom_page() -> PlainTextResponse:
