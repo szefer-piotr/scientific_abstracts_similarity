@@ -4,14 +4,18 @@ from utils.functions import generate_embedding
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
 
+import uvicorn
+
 from src.schemas.requests import FindSimilarAbstractsRequest
 from src.schemas.responses import SimilarAbstractsResponse
 
-import uvicorn
+
 
 app = FastAPI()
 
-@app.post("/find_similar_abstracts")
+# 5:35 na widele
+
+@app.post("/similar_abstracts")
 def find_similar_abstracts(
     request: FindSimilarAbstractsRequest
     ) -> SimilarAbstractsResponse:
