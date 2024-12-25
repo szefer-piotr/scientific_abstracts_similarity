@@ -1,5 +1,5 @@
 import json
-from mongo.connection import myclient
+from src.databases.mongo.connection import myclient
 
 mydb = myclient["abstract_search"] #This is my database
 

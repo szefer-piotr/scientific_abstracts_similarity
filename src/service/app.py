@@ -1,5 +1,4 @@
-from mongo.connection import collection
-from utils.functions import generate_embedding
+from src.utils.functions import generate_embedding
 
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
@@ -9,7 +8,8 @@ import uvicorn
 from src.schemas.requests import FindSimilarAbstractsRequest
 from src.schemas.responses import SimilarAbstractsResponse
 
-
+from src.databases.redis.connection.connector import RedisConnector
+from src.databases.mongo.connection import collection
 
 app = FastAPI()
 

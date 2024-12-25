@@ -1,4 +1,4 @@
-from mongo.connection import myclient
+from src.databases.mongo.connection import myclient
 
 import requests
 import os
