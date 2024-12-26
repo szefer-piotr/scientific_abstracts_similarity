@@ -9,20 +9,30 @@ from src.schemas.requests import FindSimilarAbstractsRequest
 from src.schemas.responses import SimilarAbstractsResponse
 
 from src.databases.redis.connection.connector import RedisConnector
-from src.databases.mongo.connection import collection
+from src.databases.mongo.connection.connector import MongoConnector
 
 app = FastAPI()
 
 # 5:35 na widele
+
+mongo_connector = MongoConnector(
+    database_name="abstract_search", 
+    collection_name="data")
 
 @app.post("/similar_abstracts")
 def find_similar_abstracts(
     request: FindSimilarAbstractsRequest
     ) -> SimilarAbstractsResponse:
     
+    # mongo_connector = MongoConnector(
+    # database_name="abstract_search", 
+    # collection_name="data")
+    
     query = request.model_dump()['query']
+    
     # breakpoint()
-    results = collection.aggregate([
+    
+    results = mongo_connector.collection.aggregate([
         {"$vectorSearch": {
             "queryVector": generate_embedding(query),
             "path": "abstract_embedding_hf",
