@@ -15,15 +15,15 @@ class RedisConnector:
         """
         self.host = host
         self.port = port
-        self.conneection = self._create_connection(host, port)
+        self.connection = self._create_connection(host, port)
 
     def close(self):
-        """Closes teh connection to redis database."""
+        """Closes the connection to redis database."""
         self.connection.connection_pool.disconnect(inuse_connections=True)
 
     def is_alive(self):
         """Checks if connection to redis database is alive."""
-        self.conneection.ping()
+        self.connection.ping()
 
     @staticmethod
     def _create_connection(host: str, port: str):

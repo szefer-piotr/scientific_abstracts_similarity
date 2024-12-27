@@ -1,19 +1,23 @@
 from src.utils.functions import generate_embedding
+import logging
 
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
 
 import uvicorn
 
-from src.schemas.requests import FindSimilarAbstractsRequest
-from src.schemas.responses import SimilarAbstractsResponse
+from src.service.schemas.requests import SearchRequest
+from src.service.schemas.responses import SearchResponse
 
 from src.databases.redis.connection.connector import RedisConnector
+from src.databases.redis.clients.search import SearchRedisClient
+
 from src.databases.mongo.connection.connector import MongoConnector
 
 app = FastAPI()
 
-# 5:35 na widele
+redis_connector = RedisConnector()
+search_redis_client = SearchRedisClient(connector=redis_connector)
 
 mongo_connector = MongoConnector(
     database_name="abstract_search", 
@@ -21,14 +25,22 @@ mongo_connector = MongoConnector(
 
 @app.post("/similar_abstracts")
 def find_similar_abstracts(
-    request: FindSimilarAbstractsRequest
-    ) -> SimilarAbstractsResponse:
+    request: SearchRequest
+    ) -> SearchResponse:
     
-    # mongo_connector = MongoConnector(
-    # database_name="abstract_search", 
-    # collection_name="data")
-    
+    logging.info(f"Received request: {request=}")
+
+    # breakpoint()
+ 
+    cached_response = search_redis_client.read(request)
+
     query = request.model_dump()['query']
+    
+    if cached_response is not None:
+        print("Cache hit!")
+        return cached_response
+    
+    print("Cache miss!")
     
     # breakpoint()
     
@@ -52,11 +64,15 @@ def find_similar_abstracts(
             "title": doc["title"], 
             "abstract": doc["abstract"],
             })
-        
-    # breakpoint()
-    return SimilarAbstractsResponse(items=response_list)
-    # return SimilarAbstractsResponse(**{"items": response_list})
+
+    search_redis_client.write(
+        request=request, 
+        response=SearchResponse(items=response_list)
+        )
+
+    return SearchResponse(items=response_list)
     
+
 @app.get("/")
 def welcom_page() -> PlainTextResponse:
     return PlainTextResponse("Abstract Similarity Search..")

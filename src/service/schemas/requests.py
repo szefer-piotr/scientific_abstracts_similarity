@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
-from src.schemas.base import BaseModelWithExtraConfig
+from src.service.schemas.base import BaseModelWithExtraConfig
 
-class FindSimilarAbstractsRequest(BaseModelWithExtraConfig):
+class SearchRequest(BaseModelWithExtraConfig):
     query: str = Field(
         default=...,
         title="Search query.",

@@ -1,6 +1,6 @@
 from pydantic import Field
 from typing import List
-from src.schemas.base import BaseModelWithExtraConfig
+from src.service.schemas.base import BaseModelWithExtraConfig
 
 
 # NestedDict: TypeAlias = dict[str, str | 'NestedDict']
@@ -26,7 +26,7 @@ class ItemModel(BaseModelWithExtraConfig):
         description="Full abstract of the research paper."
     )
 
-class SimilarAbstractsResponse(BaseModelWithExtraConfig):
+class SearchResponse(BaseModelWithExtraConfig):
     items: List[ItemModel] = Field(
         default=...,
         title="Similar abstract list",
