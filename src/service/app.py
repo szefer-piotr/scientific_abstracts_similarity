@@ -44,6 +44,10 @@ def find_similar_abstracts(
     
     if cached_response is not None:
         print("Cache hit!")
+        search_postgres_client.write(
+            request=request, 
+            response=SearchResponse(items=cached_response.items)
+        )
         return cached_response
     
     print("Cache miss!")
@@ -63,6 +67,7 @@ def find_similar_abstracts(
 
     # Extract elements of the collection search
     response_list = []
+
     for doc in results:
         response_list.append({
             "id": doc["id"],
@@ -75,6 +80,12 @@ def find_similar_abstracts(
         request=request, 
         response=SearchResponse(items=response_list)
         )
+
+    search_postgres_client.write(
+        request=request, 
+        response=SearchResponse(items=response_list)
+        )
+    
 
     return SearchResponse(items=response_list)
     

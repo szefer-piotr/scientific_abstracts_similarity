@@ -88,7 +88,7 @@ class BasePostgresClient(ABC):
             
         Returns:
             Transformed and prepared metadata object."""
-        fields = PostgresMetadata.__fields__.keys()
+        fields = PostgresMetadata.model_fields.keys()
         metadata = self._extract_data(raw_postgres_row, fields)
         return PostgresMetadata(**metadata)
 
@@ -132,12 +132,12 @@ class BasePostgresClient(ABC):
         request_fields = list(request.model_dump().keys())
         response_fields = list(response.model_dump().keys())
         all_fields = request_fields + response_fields
-        query = "INSERT INTO "
-        query += f"{self.table} "
-        query += "(" + ", ".join(all_fields) + ") "
-        query += "VALUES "
-        query += "(" + ", ".join(["%s" for _ in range(len(all_fields))]) + ") "
-        return query
+        sql_query = "INSERT INTO "
+        sql_query += f"{self.table} "
+        sql_query += "(" + ", ".join(all_fields) + ") "
+        sql_query += "VALUES "
+        sql_query += "(" + ", ".join(["%s" for _ in range(len(all_fields))]) + ") "
+        return sql_query
 
     @staticmethod
     def _prepare_insert_data(request: Request, response: Response) -> list[Any]:
@@ -150,9 +150,9 @@ class BasePostgresClient(ABC):
         Returns:
             tuple: Prepared data."""
         
-        request_data = tuple(request.model_dump().values())
-        response_data = tuple(response.model_dump().values())
-        return request_data + response_data
+        request_data = request.query
+        response_data = response.model_dump_json()
+        return (request_data, response_data)
 
     def _prepare_select_query(self, ids: list[int] | None = None) -> str:
         """Prepares query for selecting data from Postgres table.

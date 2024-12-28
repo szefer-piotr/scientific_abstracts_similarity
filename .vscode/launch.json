@@ -10,8 +10,10 @@
             "name": "Debugger Test",
             "type": "debugpy",
             "request": "launch",
-            "program": "/home/szefer/projects/similarity_search/src/service/app.py",
-            "cwd": "/home/szefer/projects/similarity_search/",
+            // "program": "/home/szefer/projects/similarity_search/src/service/app.py",
+            "program": "/home/piotr/projects/articles_similarity/scientific_abstracts_similarity/src/service/app.py",
+            // "cwd": "/home/szefer/projects/similarity_search/",
+            "cwd": "/home/piotr/projects/articles_similarity/scientific_abstracts_similarity/",
             "purpose": [
                 "debug-in-terminal"
             ]
