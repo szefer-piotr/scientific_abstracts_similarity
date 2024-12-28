@@ -12,6 +12,9 @@ from src.service.schemas.responses import SearchResponse
 from src.databases.redis.connection.connector import RedisConnector
 from src.databases.redis.clients.search import SearchRedisClient
 
+from src.databases.postgres.connection.connector import PostgresConnector
+from src.databases.postgres.clients.search import SearchPostgresClient
+
 from src.databases.mongo.connection.connector import MongoConnector
 
 app = FastAPI()
