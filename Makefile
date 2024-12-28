@@ -6,3 +6,9 @@ request:
 
 redis:
 	export PYHTONPATH=. && bash scripts/run_redis.sh
+
+postgres:
+	export PYHTONPATH=. && bash scripts/run_postgres.sh
+
+mongodb:
+	export PYHTONPATH=. && bash scripts/run_mongodb.sh

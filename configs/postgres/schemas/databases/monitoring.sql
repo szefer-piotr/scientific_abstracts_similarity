@@ -1,0 +1,2 @@
+CREATE DATABASE monitoring;
+GRANT ALL PRIVILEGES ON DATABASE monitoring TO postgres;

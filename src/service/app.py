@@ -22,6 +22,9 @@ app = FastAPI()
 redis_connector = RedisConnector()
 search_redis_client = SearchRedisClient(connector=redis_connector)
 
+postgres_connector = PostgresConnector()
+search_postgres_client = SearchPostgresClient(connector=postgres_connector)
+
 mongo_connector = MongoConnector(
     database_name="abstract_search", 
     collection_name="data")

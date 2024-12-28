@@ -5,8 +5,11 @@ from src.service.schemas.requests import SearchRequest
 from src.service.schemas.responses import SearchResponse
 
 from src.databases.postgres.connection.connector import PostgresConnector
+# from src.databases.postgres.clients.search import SearchPostgresClient
+
 from src.databases.postgres.structures.row import PostgresRow
 from src.databases.postgres.structures.metadata import PostgresMetadata
+
 from typing import TypeVar, Any
 
 import logging
@@ -14,7 +17,7 @@ import logging
 Request = TypeVar("Request", bound=SearchRequest)
 Response = TypeVar("Response", bound=SearchResponse)
 
-class BasePostgresResponseClient(ABC):
+class BasePostgresClient(ABC):
     """Abstract class for interacting with Postgres server."""
 
     def __init__(self, connector: PostgresConnector, table: str):
