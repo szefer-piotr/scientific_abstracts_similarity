@@ -3,11 +3,14 @@ import logging
 
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
+from fastapi import BackgroundTasks
 
 import uvicorn
 
 from src.service.schemas.requests import SearchRequest
 from src.service.schemas.responses import SearchResponse
+from src.service.tasks.postgres import write_to_postgres
+from src.service.tasks.redis import write_to_redis
 
 from src.databases.redis.connection.connector import RedisConnector
 from src.databases.redis.clients.search import SearchRedisClient
@@ -31,7 +34,8 @@ mongo_connector = MongoConnector(
 
 @app.post("/similar_abstracts")
 def find_similar_abstracts(
-    request: SearchRequest
+    request: SearchRequest,
+    background_tasks: BackgroundTasks,
     ) -> SearchResponse:
     
     logging.info(f"Received request: {request=}")
@@ -44,10 +48,11 @@ def find_similar_abstracts(
     
     if cached_response is not None:
         print("Cache hit!")
-        search_postgres_client.write(
-            request=request, 
-            response=SearchResponse(items=cached_response.items)
-        )
+        background_tasks.add_task(
+            func=write_to_postgres, 
+            postgres_client=search_postgres_client, 
+            request=request,
+            response=SearchResponse(items=cached_response.items))
         return cached_response
     
     print("Cache miss!")
@@ -76,15 +81,17 @@ def find_similar_abstracts(
             "abstract": doc["abstract"],
             })
 
-    search_redis_client.write(
-        request=request, 
-        response=SearchResponse(items=response_list)
-        )
-
-    search_postgres_client.write(
-        request=request, 
-        response=SearchResponse(items=response_list)
-        )
+    background_tasks.add_task(
+        func=write_to_postgres, 
+        postgres_client=search_postgres_client, 
+        request=request,
+        response=SearchResponse(items=response_list))
+    
+    background_tasks.add_task(
+        func=write_to_redis, 
+        redis_client=search_redis_client, 
+        request=request,
+        response=SearchResponse(items=response_list))
     
 
     return SearchResponse(items=response_list)
