@@ -20,6 +20,11 @@ from src.databases.postgres.clients.search import SearchPostgresClient
 
 from src.databases.mongo.connection.connector import MongoConnector
 
+import logging
+from src.utils.logging import setup_logging_with_formatters
+
+setup_logging_with_formatters()
+
 app = FastAPI()
 
 redis_connector = RedisConnector()
@@ -53,6 +58,7 @@ def find_similar_abstracts(
             postgres_client=search_postgres_client, 
             request=request,
             response=SearchResponse(items=cached_response.items))
+        logging.info("Returning cached response.")
         return cached_response
     
     print("Cache miss!")
@@ -92,8 +98,8 @@ def find_similar_abstracts(
         redis_client=search_redis_client, 
         request=request,
         response=SearchResponse(items=response_list))
-    
 
+    logging.info("Returning response list.")
     return SearchResponse(items=response_list)
     
 
